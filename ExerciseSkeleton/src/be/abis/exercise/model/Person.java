@@ -1,7 +1,9 @@
 package be.abis.exercise.model;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class Person implements Instructor, CourseParticipant, Comparable<CourseParticipant> {
 
@@ -15,20 +17,21 @@ public class Person implements Instructor, CourseParticipant, Comparable<CourseP
 	private String password;
 	private Company company;
 
-	public Person(String firstName, String lastName) {
+	public Person(String firstName, String lastName, LocalDate birthDate) {
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.birthDate = birthDate;
 		personNumber = ++counter;
 	}
 
-	public Person(String firstName, String lastName, Company company) {
-		this(firstName, lastName);
+	public Person(String firstName, String lastName,LocalDate birthDate, Company company) {
+		this(firstName, lastName, birthDate);
 		this.company = company;
 	}
 	
 	public Person(String firstName, String lastName, LocalDate birthDate, String email,
 			String password, Company company) {
-		this(firstName,lastName,company);
+		this(firstName,lastName,birthDate, company);
 		this.birthDate = birthDate;
 		this.email = email;
 		this.password = password;
@@ -36,10 +39,31 @@ public class Person implements Instructor, CourseParticipant, Comparable<CourseP
 
 	public Person(String firstName, String lastName, LocalDate birthDate, String email,
 			String password) {
-		this(firstName,lastName);
+		this(firstName,lastName, birthDate);
 		this.birthDate = birthDate;
 		this.email = email;
 		this.password = password;
+	}
+
+    public Person() {
+
+    }
+
+    public long calculateAge(){
+		return ChronoUnit.YEARS.between(birthDate, LocalDate.now());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Person person = (Person) o;
+		return firstName.equals(person.firstName) && lastName.equals(person.lastName) && birthDate.equals(person.birthDate);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(birthDate);
 	}
 
 	public int getPersonNumber() {

@@ -21,4 +21,9 @@ public class TestReadCompanies {
 
 	}
 
+	//@Test
+	// test that the csv file prints properly
+	//Path p = Paths.get(((FilePersonRepository) sth
+
+
 }

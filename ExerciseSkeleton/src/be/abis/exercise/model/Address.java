@@ -1,5 +1,10 @@
 package be.abis.exercise.model;
 
+import be.abis.exercise.exception.ZipCodeNotCorrectException;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Address {
 	
 	private String street;
@@ -21,6 +26,18 @@ public class Address {
 		this.town = town;
 		this.country = country;
 		this.countryCode = countryCode;
+	}
+
+	public void checkZipCode() throws ZipCodeNotCorrectException {
+		if (this.countryCode.equals("BE")){
+			Pattern p = Pattern.compile("\\d{4}");
+			Matcher m = p.matcher(this.zipCode);
+			if (!m.matches()) throw new ZipCodeNotCorrectException("Zip code for BE not correct");
+		}
+
+		if (this.countryCode.equals("NL")) {
+			if (!this.zipCode.matches("[1-9]\\d{3}\\s\\w{2}")) throw new ZipCodeNotCorrectException("Zip code for NL not correct");
+		}
 	}
 
 	public String getStreet() {

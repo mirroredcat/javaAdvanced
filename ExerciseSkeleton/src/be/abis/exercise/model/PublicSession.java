@@ -3,9 +3,12 @@ package be.abis.exercise.model;
 
 import be.abis.exercise.exception.InvoiceException;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
 public class PublicSession extends Session {
 	
@@ -34,6 +37,22 @@ public class PublicSession extends Session {
 	public double invoice() throws InvoiceException {
 		System.out.println("Invoice in PublicSession");
 		return 500;
+	}
+
+	public String calculateRevenue(){
+
+		BigDecimal dailyPrice = new BigDecimal(this.getCourse().getDailyPrice());
+		BigDecimal total = BigDecimal.ONE;
+		BigDecimal twentyONE = new BigDecimal("21");
+		BigDecimal oneHundred = new BigDecimal("100");
+		BigDecimal enrolmentsNr = new BigDecimal(this.enrolments.size());
+		BigDecimal nrOfDays = new BigDecimal(this.getCourse().getDays());
+		total = total.multiply(enrolmentsNr).multiply(nrOfDays).multiply(dailyPrice);
+		BigDecimal rev = total.subtract(total.multiply(twentyONE.divide(oneHundred)));
+
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("nl", "BE"));
+		nf.setGroupingUsed(false);
+		return nf.format(rev).replaceFirst("\\u00A0", "");
 	}
 
 	public void addEnrolment(CourseParticipant... cps) {
