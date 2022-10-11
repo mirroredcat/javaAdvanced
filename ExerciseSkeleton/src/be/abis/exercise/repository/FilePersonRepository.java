@@ -4,6 +4,8 @@ import be.abis.exercise.exception.PersonNotFoundException;
 import be.abis.exercise.model.Address;
 import be.abis.exercise.model.Company;
 import be.abis.exercise.model.Person;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,17 +22,24 @@ public class FilePersonRepository implements PersonRepository{
 
     private List<Person> allPersons = new ArrayList<Person>();
     private static final String FILELOCATION = "ExerciseSkeleton/src/be/abis/exercise/resources/persons.csv";
+    private Logger exceptionLogger = LogManager.getLogger("exceptionLogger");
+    private static final Logger log = LogManager.getLogger(FilePersonRepository.class.getName());
 
-    public FilePersonRepository() throws IOException {
+    public FilePersonRepository() {
 
         this.readFile();
 
     }
 
-    public void readFile() throws IOException {
+    public void readFile() {
 
         if (allPersons.size() != 0) allPersons.clear();
-        List<String> lines = Files.readAllLines(Paths.get(FILELOCATION));
+        List<String> lines = null;
+        try {
+            lines = Files.readAllLines(Paths.get(FILELOCATION));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         for (String line : lines) {
                 Person p = convertToPersonObj(line);
 
@@ -88,6 +97,11 @@ public class FilePersonRepository implements PersonRepository{
       return sb.toString();
     }
 
+    public void addPerson(Person p){
+        allPersons.add(p);
+        log.info("A new person, "+ p.getFirstName() + " "+ p.getLastName() + ", has been added.");
+    }
+
     @Override
     public List<Person> getPersons() {
         return allPersons;
@@ -109,7 +123,11 @@ public class FilePersonRepository implements PersonRepository{
     public Person findPersonById(int id) throws PersonNotFoundException {
         Person foundPerson = allPersons.stream()
                 .filter(person -> person.getPersonNumber() == id)
-                .findFirst().orElseThrow(() -> new PersonNotFoundException("Person with id " + id + " not found."));
+                .findFirst().orElseThrow(() -> {
+                    exceptionLogger.error("Person with id " + id + " not found.");
+                    return new PersonNotFoundException("Person with id " + id + " not found.");
+
+                });
         return foundPerson;
     }
 
@@ -117,6 +135,11 @@ public class FilePersonRepository implements PersonRepository{
     public Person findPerson(String email, String password) throws PersonNotFoundException {
         return allPersons.stream()
                 .filter((p -> p.getEmail().equals(email) && p.getPassword().equals(password)))
-                .findFirst().orElseThrow( () -> new PersonNotFoundException("Person with email " + email + " was not found or password did not match"));
+                .findFirst().orElseThrow( () -> {
+                    exceptionLogger.error("Person with email " + email + " was not found or pass did not match.");
+                    return new PersonNotFoundException("Person with email " + email + " was not found or password did not match");
+                });
     }
+
+
 }

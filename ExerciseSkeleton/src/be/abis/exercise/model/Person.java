@@ -1,5 +1,7 @@
 package be.abis.exercise.model;
 
+import be.abis.exercise.exception.EmailNotCorrectException;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -48,6 +50,11 @@ public class Person implements Instructor, CourseParticipant, Comparable<CourseP
     public Person() {
 
     }
+
+	public boolean isEmailCorrect(){
+		return email.matches("\\w*\\.*\\w{2,}@\\w+\\.\\w{2,3}");
+	}
+
 
     public long calculateAge(){
 		return ChronoUnit.YEARS.between(birthDate, LocalDate.now());

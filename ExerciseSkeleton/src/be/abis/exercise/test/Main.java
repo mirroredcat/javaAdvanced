@@ -1,8 +1,10 @@
 package be.abis.exercise.test;
 
+import be.abis.exercise.exception.PersonNotFoundException;
 import be.abis.exercise.model.*;
 import be.abis.exercise.repository.FileCompanyRepository;
 import be.abis.exercise.repository.FilePersonRepository;
+import be.abis.exercise.repository.PersonRepository;
 //import jdk.vm.ci.meta.Local;
 
 import java.io.File;
@@ -18,6 +20,7 @@ import java.util.TreeSet;
 public class Main {
     public static void main(String[] args) {
 
+        /*
         LocalDate now = LocalDate.now();
         LocalDate calc = now.plusYears(3).plusMonths(2).plusDays(15);
         System.out.println("The date in 3 years, 2 months and 15 days will be: "+ calc.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
@@ -38,19 +41,29 @@ public class Main {
         System.out.println("time diff is " + Duration.between(LocalTime.now(), ZonedDateTime.now(ZoneId.of("Asia/Calcutta"))));
 
 
+         */
+
+        PersonRepository psr = new FilePersonRepository();
+
 
         PublicSession ps = new PublicSession(Course.JAVA_PROGRAMMING, LocalDate.of(2022,6,7),
-                new FileCompanyRepository().getCompanies().get(2), new Person("Helen", "Smith", LocalDate.of(1990,1,23)));
+                new FileCompanyRepository().getCompanies().get(1), new Person("Helen", "Smith", LocalDate.of(1990,1,23)));
 
-        ps.addEnrolment(new Person("Mikael", "Akerfield", LocalDate.of(1978, 3,15)));
-        ps.addEnrolment(new Person("John", "Smith", LocalDate.of(1990, 12,4)));
-        ps.addEnrolment(new Person("Mary", "Poppins", LocalDate.of(1976, 2,2)));
-        ps.addEnrolment(new Person("Jikk", "Saalti", LocalDate.of(1998, 3,7)));
+        try {
+            ps.addEnrolment(psr.findPersonById(1));
+            ps.addEnrolment(psr.findPersonById(2));
+            ps.addEnrolment(psr.findPersonById(3));
+            ps.addEnrolment(psr.findPersonById(4));
+            System.out.println(psr.findPersonById(1).isEmailCorrect());
+        } catch (PersonNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
-        System.out.println(ps.calculateRevenue());
-        System.out.println(ps);
-        System.out.println(ps.toString(new Locale("ro")));
-        System.out.println(ps.toString(new Locale("nl")));
+        //ps.printListOfParticipants();
+
+
+
+
 
     }
 }

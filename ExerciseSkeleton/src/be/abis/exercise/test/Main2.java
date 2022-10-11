@@ -24,12 +24,7 @@ public class Main2 {
     public static void main(String[] args) {
 
         BiFunction<Double, Integer, Double> reduceByAmount = (val,perc) -> (val - (val* perc/100.0));
-        PersonRepository repo = null;
-        try {
-            repo = new FilePersonRepository();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        PersonRepository repo = new FilePersonRepository();
 
         System.out.println(reduceByAmount.apply(100.0, 10));
         System.out.println(reduceByAmount.apply(500.0, 50));
@@ -105,5 +100,7 @@ public class Main2 {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
     }
 }
