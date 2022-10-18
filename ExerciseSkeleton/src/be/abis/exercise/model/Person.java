@@ -52,7 +52,7 @@ public class Person implements Instructor, CourseParticipant, Comparable<CourseP
     }
 
 	public boolean isEmailCorrect(){
-		return email.matches("\\w*\\.*\\w{2,}@\\w+\\.\\w{2,3}");
+		return email.matches("\\w*\\.?\\w{2,}@\\w+\\.\\w{2,3}");
 	}
 
 

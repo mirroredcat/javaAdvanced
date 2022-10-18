@@ -29,14 +29,18 @@ public class Address {
 	}
 
 	public void checkZipCode() throws ZipCodeNotCorrectException {
+		if(this.countryCode==null || this.zipCode == null){
+			throw new ZipCodeNotCorrectException("Country or zip code is null");
+		}
+
 		if (this.countryCode.equals("BE")){
-			Pattern p = Pattern.compile("\\d{4}");
+			Pattern p = Pattern.compile("[1-9]\\d{3}");
 			Matcher m = p.matcher(this.zipCode);
 			if (!m.matches()) throw new ZipCodeNotCorrectException("Zip code for BE not correct");
 		}
 
 		if (this.countryCode.equals("NL")) {
-			if (!this.zipCode.matches("[1-9]\\d{3}\\s\\w{2}")) throw new ZipCodeNotCorrectException("Zip code for NL not correct");
+			if (!this.zipCode.matches("[1-9]\\d{3}\\s?\\w{2}")) throw new ZipCodeNotCorrectException("Zip code for NL not correct");
 		}
 	}
 

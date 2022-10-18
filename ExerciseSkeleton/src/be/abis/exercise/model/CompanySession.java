@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class CompanySession extends Session {
 	private static final double MIN_INVOICE = 900;
-	private static final double MAX_INVOICE = 5000;
+	private static final double MAX_INVOICE = 50000;
 	
 	private Company organizer;
 	private int numberOfPersons;

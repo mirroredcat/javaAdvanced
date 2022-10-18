@@ -40,7 +40,6 @@ public class PublicSession extends Session {
 
 	@Override
 	public double invoice() throws InvoiceException {
-		System.out.println("Invoice in PublicSession");
 		return 500;
 	}
 
