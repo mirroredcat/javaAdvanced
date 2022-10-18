@@ -1,5 +1,6 @@
 package be.abis.exercise.test;
 
+import be.abis.exercise.exception.PersonNotBornYetException;
 import be.abis.exercise.model.Company;
 import be.abis.exercise.model.Person;
 import be.abis.exercise.repository.FilePersonRepository;
@@ -56,14 +57,26 @@ public class Main2 {
 
         System.out.println("\n----  Who is the youngest person?  ----");
         Person youngest = repo.getPersons().stream()
-                .sorted(Comparator.comparing(Person::calculateAge))
+                .sorted(Comparator.comparing(p -> {
+                    try {
+                        return p.calculateAge();
+                    } catch (PersonNotBornYetException e) {
+                        throw new RuntimeException(e);
+                    }
+                }))
                 .findFirst().get();
 
         System.out.println(youngest);
 
         System.out.println("\n----  first person of unsorted list that's older than 50  ----");
         Person over50 = repo.getPersons().stream()
-                .filter(p -> p.calculateAge() > 50)
+                .filter(p -> {
+                    try {
+                        return p.calculateAge() > 50;
+                    } catch (PersonNotBornYetException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .findFirst().get();
         System.out.println(over50);
 
@@ -79,7 +92,13 @@ public class Main2 {
 
         System.out.println("\n----  Average age of everybody  ----");
         Double averageAge = repo.getPersons().stream()
-                .collect(Collectors.averagingLong(p -> p.calculateAge()));
+                .collect(Collectors.averagingLong(p -> {
+                    try {
+                        return p.calculateAge();
+                    } catch (PersonNotBornYetException e) {
+                        throw new RuntimeException(e);
+                    }
+                }));
 
         System.out.println(averageAge);
 
@@ -89,7 +108,13 @@ public class Main2 {
             Files.lines(Paths.get("ExerciseSkeleton/src/be/abis/exercise/resources/persons.csv"))
                     .map(s -> FilePersonRepository.convertToPersonObj(s))
                     .filter(p -> p.getCompany()!=null)
-                    .filter(p -> p.getCompany().getAddress().getCountryCode().equals("BE") && p.calculateAge()>40)
+                    .filter(p -> {
+                        try {
+                            return p.getCompany().getAddress().getCountryCode().equals("BE") && p.calculateAge()>40;
+                        } catch (PersonNotBornYetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
                     .forEach(p-> {
                         try {
                             out.append(FilePersonRepository.convertPersonToString(p) + "\n");

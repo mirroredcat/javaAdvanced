@@ -1,6 +1,9 @@
 package be.abis.exercise.test;
 
+import be.abis.exercise.exception.PersonNotBornYetException;
 import be.abis.exercise.model.Person;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -42,10 +45,28 @@ public class TestPerson {
         assertEquals(3, hsp.size());
     }
 
+    @Tag("calculateAgeTest")
+    @DisplayName("Testing if the age of John correctly comes out as 32")
     @Test
-    public void johnIS32YearsOld(){
+    public void johnIS32YearsOld() throws PersonNotBornYetException {
         Person p1 = new Person("John", "Smith", LocalDate.of(1990, 12,4));
         assertEquals(31, p1.calculateAge());
+    }
+
+    @Tag("calculateAgeTest")
+    @DisplayName("The age of John should not be negative")
+    @Test
+    public void johnIsNotBornYet(){
+        Person p1 = new Person("John", "Smith", LocalDate.of(2022, 12,4));
+        assertThrows(PersonNotBornYetException.class, p1::calculateAge);
+    }
+
+    @Tag("calculateAgeTest")
+    @DisplayName("The age of John should not be null")
+    @Test
+    public void johnHasNullAge(){
+        Person p1 = new Person("John", "Smith", null);
+        assertThrows(PersonNotBornYetException.class, p1::calculateAge);
     }
 
     @Test

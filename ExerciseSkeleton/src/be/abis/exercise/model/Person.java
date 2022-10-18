@@ -1,6 +1,7 @@
 package be.abis.exercise.model;
 
 import be.abis.exercise.exception.EmailNotCorrectException;
+import be.abis.exercise.exception.PersonNotBornYetException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -56,8 +57,14 @@ public class Person implements Instructor, CourseParticipant, Comparable<CourseP
 	}
 
 
-    public long calculateAge(){
-		return ChronoUnit.YEARS.between(birthDate, LocalDate.now());
+    public long calculateAge() throws PersonNotBornYetException {
+		if (birthDate == null){throw new PersonNotBornYetException("Birth year is null");}
+		long age = ChronoUnit.YEARS.between(birthDate, LocalDate.now());
+		if (age <= 0 ) {
+			throw new PersonNotBornYetException("Person does not exist");
+		} else {
+			return age;
+		}
 	}
 
 	@Override
